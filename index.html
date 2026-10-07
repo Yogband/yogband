@@ -66,6 +66,12 @@
     <li><span class="date">Mon 2 Nov</span> – The Social, London – <a href="https://gel.now/events/1190">Tickets</a></li>
   </ul>
 
+    <!-- BANDCAMP -->
+  <h2>Listen</h2>
+  <a class="bandcamp" href="https://yogband.bandcamp.com/" target="_blank" rel="noopener">
+    <img src="images/bandcamp_yog-one.jpg" alt="Listen to YOG on Bandcamp">
+  </a>
+
   <!-- MAILING LIST -->
   <h2>Join our mailing list for gig updates</h2>
   <!-- Replace the action with the form URL from your mailing list service
@@ -80,7 +86,6 @@
   <input type="submit" value="Subscribe" />
   <p>
     <a href="https://buttondown.com/refer/yogband" target="_blank">
-      Powered by Buttondown.
     </a>
   </p>
 </form>
@@ -92,52 +97,40 @@
     box-sizing: border-box;
     width: 100%;
     max-width: 384px;
-    margin: 0 auto;      /* centres the box */
+    margin: 0 auto;
     padding: 12px;
-    border: 1px solid #e4e4e7;
-    border-radius: 6px;
-    background: #fff;
-    color: #18181b;
+    border: 2px solid var(--ink);
+    border-radius: 0;
+    background: var(--ink);
+    color: var(--bg);
     font: 14px/1.4 system-ui, sans-serif;
   }
-  .embeddable-buttondown-form label,
-  .embeddable-buttondown-form legend {
+  .embeddable-buttondown-form label {
     font-weight: 500;
   }
-  .embeddable-buttondown-form input[type="email"],
-  .embeddable-buttondown-form input[type="text"],
-  .embeddable-buttondown-form select {
+  .embeddable-buttondown-form input[type="email"] {
+    flex: none;
     box-sizing: border-box;
     width: 100%;
     padding: 6px 8px;
-    border: 1px solid #d4d4d8;
-    border-radius: 4px;
-    background: #fff;
-    color: inherit;
+    border: 2px solid var(--bg);
+    border-radius: 0;
+    background: var(--bg);
+    color: var(--ink);
     font: inherit;
-  }
-  /* Stops the page-level input[type=email] flex-basis (240px) becoming a 240px height */
-  .embeddable-buttondown-form input[type="email"] {
-    flex: none;
-  }
-  .embeddable-buttondown-form fieldset {
-    margin: 0;
-    padding: 0;
-    border: 0;
-  }
-  .embeddable-buttondown-form fieldset label {
-    display: block;
-    font-weight: 400;
   }
   .embeddable-buttondown-form input[type="submit"] {
     padding: 8px 12px;
-    border: 0;
-    border-radius: 4px;
-    background: #18181b;
-    color: #fff;
+    border: 2px solid var(--bg);
+    border-radius: 0;
+    background: transparent;
+    color: var(--bg);
     font: inherit;
-    font-weight: 500;
+    font-weight: 600;
     cursor: pointer;
+  }
+  .embeddable-buttondown-form input:focus-visible {
+    outline-color: var(--bg);   /* your page-wide ink outline would be invisible on the dark box */
   }
   .embeddable-buttondown-form p {
     margin: 0;
@@ -145,15 +138,9 @@
     text-align: center;
   }
   .embeddable-buttondown-form p a {
-    color: #71717a;
+    color: var(--bg);
   }
 </style>
-  
-  <!-- BANDCAMP -->
-  <h2>Listen</h2>
-  <a class="bandcamp" href="https://yogband.bandcamp.com/" target="_blank" rel="noopener">
-    <img src="images/bandcamp_yog-one.jpg" alt="Listen to YOG on Bandcamp">
-  </a>
 
   <!-- PHOTOS -->
   <h2>Photos</h2>
