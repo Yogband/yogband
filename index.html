@@ -4,8 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>YOG</title>
-<link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
-<style>
+<link href="https://fonts.googleapis.com/css2?family=Questrial&display=swap" rel="stylesheet"><style>
   :root { --bg:#f0c230; --ink:#151515; }
   * { box-sizing:border-box; }
   html { background:var(--bg); }
@@ -25,7 +24,7 @@
   @media (max-width:1100px) { #sides { display:none; } }
 
   main { position:relative; z-index:1; max-width:640px; margin:0 auto; padding:3rem 1.25rem 4rem; text-align:center; }
-  h1 { font:400 clamp(6.5rem,30vw,12rem)/1 "Anton", Impact, sans-serif; margin:0 0 2rem; letter-spacing:.02em; filter:url(#rough); }
+  h1 { font:400 clamp(5rem,22vw,9rem)/1 "Questrial", Helvetica, Arial, sans-serif; margin:0 0 2rem; letter-spacing:.02em; filter:url(#rough); }  
   h2 { font-size:1.5rem; font-weight:700; line-height:1.2; margin:3.5rem 0 1rem; }
   a { color:var(--ink); text-underline-offset:3px; }
   a:focus-visible, button:focus-visible, input:focus-visible { outline:3px solid var(--ink); outline-offset:3px; }
@@ -52,7 +51,7 @@
 <body>
 
 <!-- Slightly roughens the edges of the YOG title. Raise scale for rougher edges. -->
-<svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="rough"><feTurbulence type="fractalNoise" baseFrequency=".05" numOctaves="3" seed="2" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="5"/></filter></svg>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="rough"><feTurbulence type="fractalNoise" baseFrequency=".05" numOctaves="3" seed="2" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="3"/></filter></svg>
 
 <div id="sides" aria-hidden="true"></div>
 
