@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>YOG</title>
+<link href="https://fonts.googleapis.com/css2?family=Questrial&display=swap" rel="stylesheet"><style>
+  :root { --bg:#f0c230; --ink:#151515; }
+  * { box-sizing:border-box; }
+  html { background:var(--bg); }
+  body { position:relative; margin:0; background:var(--bg); color:var(--ink); font:400 1.05rem/1.5 system-ui, -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; }
+
+  /* Textured background: mottled dark blotches + fine grain, fixed behind everything.
+     Tweak the opacity values to make the texture stronger or subtler. */
+  body::before { content:""; position:fixed; inset:0; z-index:0; pointer-events:none;
+    background-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='700' height='700'%3E%3Cfilter id='b'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.008 .014' numOctaves='4' seed='7' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .78 0 0 0 0 .5 0 0 0 0 .04 1.6 0 0 0 -.6'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23b)'/%3E%3C/svg%3E"),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' seed='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .35 0 0 0 0 .22 0 0 0 0 .02 0 1.4 0 0 -.45'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+    opacity:.22; }
+
+  /* Side images: scroll with the page, natural proportions, no rotation, no shadow.
+     max-width is only a safety cap (images scale down proportionally if wider). */
+  #sides { position:absolute; inset:0; pointer-events:none; z-index:0; overflow:hidden; }
+  #sides img { position:absolute; height:auto; max-width:220px; }
+  @media (max-width:1100px) { #sides { display:none; } }
+
+  main { position:relative; z-index:1; max-width:640px; margin:0 auto; padding:3rem 1.25rem 4rem; text-align:center; }
+  h1 { font:400 clamp(5rem,22vw,9rem)/1 "Questrial", Helvetica, Arial, sans-serif; margin:0 0 2rem; letter-spacing:.02em; filter:url(#rough); }  
+  h2 { font-size:1.5rem; font-weight:700; line-height:1.2; margin:3.5rem 0 1rem; }
+  a { color:var(--ink); text-underline-offset:3px; }
+  a:focus-visible, button:focus-visible, input:focus-visible { outline:3px solid var(--ink); outline-offset:3px; }
+
+  /* Gigs */
+  #gigs { list-style:none; margin:0; padding:0; }
+  #gigs li { padding:.7rem 0; border-bottom:2px solid var(--ink); }
+  #gigs li:first-child { border-top:2px solid var(--ink); }
+  #gigs .date { font-weight:600; }
+
+  /* Mailing list */
+  form { display:flex; gap:.5rem; flex-wrap:wrap; justify-content:center; }
+  input[type=email] { flex:1 1 240px; padding:.7rem; font:inherit; border:2px solid var(--ink); background:#fff; }
+  button { padding:.7rem 1.4rem; font:inherit; font-weight:600; border:2px solid var(--ink); background:var(--ink); color:var(--bg); cursor:pointer; }
+
+  /* Bandcamp */
+  .bandcamp img { display:block; margin:0 auto; max-width:100%; width:320px; border:2px solid var(--ink); }
+
+  /* Photos */
+  #photos { display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:.6rem; }
+  #photos img { width:100%; aspect-ratio:1; object-fit:cover; display:block; }
+</style>
+</head>
+<body>
+
+<!-- Slightly roughens the edges of the YOG title. Raise scale for rougher edges. -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="rough"><feTurbulence type="fractalNoise" baseFrequency=".05" numOctaves="3" seed="2" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="3"/></filter></svg>
+
+<div id="sides" aria-hidden="true"></div>
+
+<main>
+  <h1>YOG</h1>
+
+  <!-- UPCOMING GIGS -->
+  <h2>Upcoming gigs</h2>
+  <ul id="gigs">
+    <!-- Copy a line per gig. Delete the <a> part if there's no ticket link. -->
+    <li><span class="date">Mon 2 Nov</span> – The Social, London – <a href="https://gel.now/events/1190">Tickets</a></li>
+  </ul>
+
+  <!-- MAILING LIST -->
+  <h2>Join the mailing list</h2>
+  <!-- Replace the action with the form URL from your mailing list service
+       (e.g. Formspree, Buttondown, Mailchimp). -->
+<form
+  action="https://buttondown.com/api/emails/embed-subscribe/yogband"
+  method="post"
+  class="embeddable-buttondown-form"
+>
+  <label for="bd-email">Enter your email</label>
+  <input type="email" name="email" id="bd-email" />
+  <input type="submit" value="Subscribe" />
+  <p>
+    <a href="https://buttondown.com/refer/yogband" target="_blank">
+      Powered by Buttondown.
+    </a>
+  </p>
+</form>
+<style>
+  .embeddable-buttondown-form {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 384px;
+    margin: 0 auto;      /* centres the box */
+    padding: 12px;
+    border: 1px solid #e4e4e7;
+    border-radius: 6px;
+    background: #fff;
+    color: #18181b;
+    font: 14px/1.4 system-ui, sans-serif;
+  }
+  .embeddable-buttondown-form label,
+  .embeddable-buttondown-form legend {
+    font-weight: 500;
+  }
+  .embeddable-buttondown-form input[type="email"],
+  .embeddable-buttondown-form input[type="text"],
+  .embeddable-buttondown-form select {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 6px 8px;
+    border: 1px solid #d4d4d8;
+    border-radius: 4px;
+    background: #fff;
+    color: inherit;
+    font: inherit;
+  }
+  /* Stops the page-level input[type=email] flex-basis (240px) becoming a 240px height */
+  .embeddable-buttondown-form input[type="email"] {
+    flex: none;
+  }
+  .embeddable-buttondown-form fieldset {
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+  .embeddable-buttondown-form fieldset label {
+    display: block;
+    font-weight: 400;
+  }
+  .embeddable-buttondown-form input[type="submit"] {
+    padding: 8px 12px;
+    border: 0;
+    border-radius: 4px;
+    background: #18181b;
+    color: #fff;
+    font: inherit;
+    font-weight: 500;
+    cursor: pointer;
+  }
+  .embeddable-buttondown-form p {
+    margin: 0;
+    font-size: 12px;
+    text-align: center;
+  }
+  .embeddable-buttondown-form p a {
+    color: #71717a;
+  }
+</style>
+  
+  <!-- BANDCAMP -->
+  <h2>Listen</h2>
+  <a class="bandcamp" href="https://yogband.bandcamp.com/" target="_blank" rel="noopener">
+    <img src="images/bandcamp_yog-one.jpg" alt="Listen to YOG on Bandcamp">
+  </a>
+
+  <!-- PHOTOS -->
+  <h2>Photos</h2>
+  <div id="photos"></div>
+
+  <!-- CONTACT -->
+  <h2>Contact</h2>
+  <p>Get in touch: <a href="mailto:theyogband@gmail.com">theyogband@gmail.com</a></p>
+</main>
+
+<script>
+  /* ---- EDIT THESE LISTS ----
+     Put image files in the folders named below, then add the filename here. */
+
+  // Gig photos, shown in the Photos grid (files live in the "photos" folder)
+  const photos = [
+    // "gig-2026-10-01.jpg",
+    // "soundcheck.jpg",
+  ];
+
+  // Background images scattered down the sides (files live in the "side" folder)
+  const sideImages = [
+    "bird_small.png",
+    "grey-brown_small.png",
+    "lizard_small.png",
+    "spotty_small.png",
+    "starry_small.png",
+    "teal_small.png",
+    "yellow_small.png",
+  ];
+
+  /* ---- Don't need to edit below ---- */
+  const grid = document.getElementById('photos');
+  photos.forEach(f => {
+    const img = document.createElement('img');
+    img.src = 'photos/' + f; img.alt = 'YOG live'; img.loading = 'lazy';
+    grid.appendChild(img);
+  });
+
+  const sides = document.getElementById('sides');
+
+  // Shuffle, then give each image its own vertical band (random within it),
+  // alternating left/right. This spreads them over the whole page height
+  // instead of clumping, while still being random.
+  const order = [...sideImages].sort(() => Math.random() - 0.5);
+  const items = order.map((f, i) => {
+    const img = document.createElement('img');
+    img.src = 'side/' + f; img.alt = '';
+    sides.appendChild(img);
+    return {
+      img,
+      right: i % 2 === 1,
+      rx: Math.random(),                      // random position across the side margin
+      ry: (i + Math.random()) / order.length  // random position within its band
+    };
+  });
+
+  function layout() {
+    const W = sides.clientWidth, H = sides.clientHeight;
+    const gutter = (W - 640) / 2;             // 640 = main's max-width
+    items.forEach(it => {
+      const w = it.img.offsetWidth, h = it.img.offsetHeight;
+      const x = 8 + it.rx * Math.max(0, gutter - w - 16);
+      it.img.style.left  = it.right ? 'auto' : x + 'px';
+      it.img.style.right = it.right ? x + 'px' : 'auto';
+      it.img.style.top   = Math.max(0, it.ry * (H - h)) + 'px';
+    });
+  }
+  items.forEach(it => it.img.addEventListener('load', layout));
+  new ResizeObserver(layout).observe(sides);
+</script>
+</body>
+</html>
