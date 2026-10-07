@@ -302,12 +302,17 @@
   ];
 
   // Background images
-  const sideImages = [
-    "bird_small.png",
-    "lizard_small.png",
-    "spotty_small.png",
-    "yellow_small.png",
-  ];
+ const sideImages = [
+  "bird_small.png",
+  "lizard_small.png",
+  "spotty_small.png",
+  "yellow_small.png",
+  "another_small.png",
+  "another2_small.png",
+  // add as many as you like
+];
+
+const SIDE_COUNT = 3; // how many to show at once
 
   /* ---- Don't need to edit below ---- */
 
@@ -326,7 +331,14 @@
   const GAP = 16;
 
   // Shuffle so the arrangement differs each load
-  const order = [...sideImages].sort(() => Math.random() - 0.5);
+ // Fisher-Yates shuffle (fairer than sort(() => Math.random() - 0.5))
+const shuffled = [...sideImages];
+for (let i = shuffled.length - 1; i > 0; i--) {
+  const j = Math.floor(Math.random() * (i + 1));
+  [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+}
+
+const order = shuffled.slice(0, SIDE_COUNT);
 
   const items = order.map((f, i) => {
     const img = document.createElement('img');
