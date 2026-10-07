@@ -10,14 +10,6 @@
   html { background:var(--bg); }
   body { position:relative; margin:0; background:var(--bg); color:var(--ink); font:400 1.05rem/1.5 system-ui, -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; }
 
-  /* Textured background: mottled dark blotches + fine grain, fixed behind everything.
-     Tweak the opacity values to make the texture stronger or subtler. */
-  body::before { content:""; position:fixed; inset:0; z-index:0; pointer-events:none;
-    background-image:
-      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='700' height='700'%3E%3Cfilter id='b'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.008 .014' numOctaves='4' seed='7' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .78 0 0 0 0 .5 0 0 0 0 .04 1.6 0 0 0 -.6'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%10b)'/%3E%3C/svg%3E"),
-      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' seed='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .35 0 0 0 0 .22 0 0 0 0 .02 0 1.4 0 0 -.45'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%10g)'/%3E%3C/svg%3E");
-    opacity:.22; }
-
   /* Side images: scroll with the page, natural proportions, no rotation, no shadow.
      max-width is only a safety cap (images scale down proportionally if wider). */
   #sides { position:absolute; inset:0; pointer-events:none; z-index:0; overflow:hidden; }
