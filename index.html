@@ -193,35 +193,65 @@
 
   const sides = document.getElementById('sides');
 
-  // Shuffle, then give each image its own vertical band (random within it),
-  // alternating left/right. This spreads them over the whole page height
-  // instead of clumping, while still being random.
-  const order = [...sideImages].sort(() => Math.random() - 0.5);
-  const items = order.map((f, i) => {
-    const img = document.createElement('img');
-    img.src = 'side/' + f; img.alt = '';
-    sides.appendChild(img);
-    return {
-      img,
-      right: i % 2 === 1,
-      rx: Math.random(),                      // random position across the side margin
-      ry: (i + Math.random()) / order.length  // random position within its band
-    };
-  });
+const GAP = 16;  // minimum space between images, in px
 
-  function layout() {
-    const W = sides.clientWidth, H = sides.clientHeight;
-    const gutter = (W - 640) / 2;             // 640 = main's max-width
-    items.forEach(it => {
-      const w = it.img.offsetWidth, h = it.img.offsetHeight;
-      const x = 8 + it.rx * Math.max(0, gutter - w - 16);
-      it.img.style.left  = it.right ? 'auto' : x + 'px';
-      it.img.style.right = it.right ? x + 'px' : 'auto';
-      it.img.style.top   = Math.max(0, it.ry * (H - h)) + 'px';
+// Shuffle so the arrangement differs each load
+const order = [...sideImages].sort(() => Math.random() - 0.5);
+
+const items = order.map((f, i) => {
+  const img = document.createElement('img');
+  img.src = 'side/' + f; img.alt = '';
+  sides.appendChild(img);
+
+  // Candidate positions, tried in order. The first few keep the image in its
+  // own band of the page on its own side (even spread); the rest are fallbacks
+  // anywhere on either side, used only if the first choices collide.
+  const tries = [];
+  for (let t = 0; t < 60; t++) {
+    const first = t < 12;
+    tries.push({
+      right: first ? i % 2 === 1 : Math.random() < 0.5,
+      rx: Math.random(),
+      ry: first ? (i + Math.random()) / order.length : Math.random()
     });
   }
-  items.forEach(it => it.img.addEventListener('load', layout));
-  new ResizeObserver(layout).observe(sides);
+  return { img, tries };
+});
+
+function layout() {
+  const W = sides.clientWidth, H = sides.clientHeight;
+  const gutter = (W - 640) / 2;             // 640 = main's max-width
+  const placed = [];
+
+  items.forEach(it => {
+    const w = it.img.offsetWidth, h = it.img.offsetHeight;
+    const room = Math.max(0, gutter - w - 16);
+    let best = null;
+
+    for (const c of it.tries) {
+      const x = 8 + c.rx * room;
+      const left = c.right ? W - x - w : x;
+      const top = Math.max(0, c.ry * (H - h));
+
+      // total overlap with images already placed (each padded by GAP/2)
+      let overlap = 0;
+      for (const p of placed) {
+        const ox = Math.min(left + w + GAP / 2, p.l + p.w + GAP / 2) - Math.max(left - GAP / 2, p.l - GAP / 2);
+        const oy = Math.min(top + h + GAP / 2, p.t + p.h + GAP / 2) - Math.max(top - GAP / 2, p.t - GAP / 2);
+        if (ox > 0 && oy > 0) overlap += ox * oy;
+      }
+      if (!best || overlap < best.overlap) best = { left, top, overlap };
+      if (overlap === 0) break;             // found a clear spot
+    }
+
+    it.img.style.right = 'auto';
+    it.img.style.left = best.left + 'px';
+    it.img.style.top = best.top + 'px';
+    placed.push({ l: best.left, t: best.top, w, h });
+  });
+}
+items.forEach(it => it.img.addEventListener('load', layout));
+new ResizeObserver(layout).observe(sides);
 </script>
 </body>
 </html>
