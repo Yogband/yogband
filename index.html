@@ -83,24 +83,6 @@
     outline-offset:3px;
   }
 
-  <!-- Roughens the edges of the YOG title -->
-<svg width="0" height="0" style="position:absolute" aria-hidden="true">
-  <filter id="rough">
-    <feTurbulence
-      type="fractalNoise"
-      baseFrequency=".05"
-      numOctaves="3"
-      seed="2"
-      result="n"
-    />
-    <feDisplacementMap
-      in="SourceGraphic"
-      in2="n"
-      scale="5"
-    />
-  </filter>
-</svg>
-
   /* Gigs */
   #gigs {
     list-style:none;
