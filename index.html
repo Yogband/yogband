@@ -166,32 +166,16 @@ h1 img {
 
 <h1><img src="images/yog_title_ink_small.png" alt="YOG" width="581" height="228"></h1>
   
-  <!-- UPCOMING GIGS -->
-  <h2>Upcoming gigs</h2>
+    <!-- GIGS (filled in by the script below) -->
+  <section id="upcoming-section" hidden>
+    <h2>Upcoming gigs</h2>
+    <ul id="gigs"></ul>
+  </section>
 
-  <!-- When you have a gig, delete the "no-gigs" line and uncomment the list below -->
-  <p class="no-gigs">No gigs announced right now. Join the mailing list below to hear first.</p>
-
-  <!--
-  <ul id="gigs">
-    <li>
-      <span class="date">Sat 14 Nov</span> – Venue, London –
-      <a href="https://example.com">Tickets</a>
-    </li>
-  </ul>
-  -->
-
-  <!-- PREVIOUS GIGS (newest first) -->
-  <h2>Previous gigs</h2>
-
-  <ul id="past-gigs">
-    <li>
-      <span class="date">Mon 2 Nov</span> – The Social, London W1W 7JD
-    </li>
-    <li>
-      <span class="date">Sat 31 Oct</span> – SET Social, London SE15 4NP
-    </li>
-  </ul>
+  <section id="past-section" hidden>
+    <h2>Previous gigs</h2>
+    <ul id="past-gigs"></ul>
+  </section>
 
   <!-- BANDCAMP -->
   <h2>Listen</h2>
@@ -315,7 +299,16 @@ h1 img {
 
 <script>
   /* ---- EDIT THESE LISTS ---- */
-
+  
+  // Gigs: add a new line for each gig. Date format is YYYY-MM-DD.
+  // "tickets" is optional. Order doesn't matter, the page sorts them.
+  const gigs = [
+    { date: "2026-10-31", venue: "SET Social, London SE15 4NP",
+      tickets: "https://setspace.uk/event/halloween-party-set-social-31-october-2026/" },
+    { date: "2026-11-02", venue: "The Social, London W1W 7JD",
+      tickets: "https://gel.now/events/1190" },
+  ];
+  
   // Gig photos
   const photos = [
     // "gig-2026-10-01.jpg",
@@ -337,7 +330,54 @@ h1 img {
 const SIDE_COUNT = 3; // how many to show at once
 
   /* ---- Don't need to edit below ---- */
+  // ---- Gigs: split into upcoming / previous by date ----
+  (function renderGigs() {
+    const DAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
+    const now = new Date();
+    const pad = n => String(n).padStart(2, '0');
+    const today = now.getFullYear() + '-' + pad(now.getMonth() + 1) + '-' + pad(now.getDate());
+
+    function label(iso) {
+      const [y, m, d] = iso.split('-').map(Number);
+      const dt = new Date(y, m - 1, d);
+      return DAYS[dt.getDay()] + ' ' + d + ' ' + MONTHS[m - 1];
+    }
+
+    function makeItem(g, withTickets) {
+      const li = document.createElement('li');
+
+      const date = document.createElement('span');
+      date.className = 'date';
+      date.textContent = label(g.date);
+      li.appendChild(date);
+
+      li.appendChild(document.createTextNode(' – ' + g.venue));
+
+      if (withTickets && g.tickets) {
+        li.appendChild(document.createTextNode(' – '));
+        const a = document.createElement('a');
+        a.href = g.tickets;
+        a.textContent = 'Tickets';
+        li.appendChild(a);
+      }
+      return li;
+    }
+
+    const upcoming = gigs.filter(g => g.date >= today).sort((a, b) => a.date.localeCompare(b.date));
+    const past = gigs.filter(g => g.date < today).sort((a, b) => b.date.localeCompare(a.date));
+
+    const upList = document.getElementById('gigs');
+    const pastList = document.getElementById('past-gigs');
+
+    upcoming.forEach(g => upList.appendChild(makeItem(g, true)));
+    past.forEach(g => pastList.appendChild(makeItem(g, false)));
+
+    document.getElementById('upcoming-section').hidden = upcoming.length === 0;
+    document.getElementById('past-section').hidden = past.length === 0;
+  })();
+  
   const grid = document.getElementById('photos');
 
   photos.forEach(f => {
