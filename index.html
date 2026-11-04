@@ -80,24 +80,29 @@ h1 img {
   }
 
   /* Gigs */
-  #gigs {
+  #gigs, #past-gigs {
     list-style:none;
     margin:0;
     padding:0;
   }
 
-  #gigs li {
+  #gigs li, #past-gigs li {
     padding:.7rem 0;
     border-bottom:2px solid var(--ink);
   }
 
-  #gigs li:first-child {
+  #gigs li:first-child, #past-gigs li:first-child {
     border-top:2px solid var(--ink);
   }
 
-  #gigs .date {
+  #gigs .date, #past-gigs .date {
     font-weight:600;
   }
+
+  .no-gigs { margin:0; }
+
+  /* Previous gigs sit a little quieter than upcoming ones */
+  #past-gigs { opacity:.7; }
 
   /* Mailing list */
   form {
@@ -164,16 +169,29 @@ h1 img {
   <!-- UPCOMING GIGS -->
   <h2>Upcoming gigs</h2>
 
- <ul id="gigs">
-  <li>
-    <span class="date">Sat 31 Oct</span> – SET Social, London SE15 4NP - 
-    <a href="https://setspace.uk/event/halloween-party-set-social-31-october-2026/">Tickets</a>
-  </li>
-  <li>
-    <span class="date">Mon 2 Nov</span> – The Social, London W1W 7JD –
-    <a href="https://gel.now/events/1190">Tickets</a>
-  </li>
-</ul>
+  <!-- When you have a gig, delete the "no-gigs" line and uncomment the list below -->
+  <p class="no-gigs">No gigs announced right now. Join the mailing list below to hear first.</p>
+
+  <!--
+  <ul id="gigs">
+    <li>
+      <span class="date">Sat 14 Nov</span> – Venue, London –
+      <a href="https://example.com">Tickets</a>
+    </li>
+  </ul>
+  -->
+
+  <!-- PREVIOUS GIGS (newest first) -->
+  <h2>Previous gigs</h2>
+
+  <ul id="past-gigs">
+    <li>
+      <span class="date">Mon 2 Nov</span> – The Social, London W1W 7JD
+    </li>
+    <li>
+      <span class="date">Sat 31 Oct</span> – SET Social, London SE15 4NP
+    </li>
+  </ul>
 
   <!-- BANDCAMP -->
   <h2>Listen</h2>
