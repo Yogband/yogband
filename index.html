@@ -144,11 +144,78 @@ h1 img {
     gap:.6rem;
   }
 
+  #photos button {
+    padding:0;
+    border:0;
+    background:none;
+    cursor:zoom-in;
+    display:block;
+  }
+
   #photos img {
     width:100%;
     aspect-ratio:1;
     object-fit:cover;
     display:block;
+  }
+
+  /* Lightbox */
+  #lightbox {
+    position:fixed;
+    inset:0;
+    z-index:100;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:rgba(21,21,21,.95);
+  }
+
+  #lightbox[hidden] { display:none; }
+
+  #lb-img {
+    max-width:100vw;
+    max-height:100vh;
+    max-height:100dvh;
+    object-fit:contain;
+    display:block;
+  }
+
+  #lightbox .lb-btn {
+    position:absolute;
+    padding:0;
+    width:3rem;
+    height:3rem;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:1.8rem;
+    line-height:1;
+    background:rgba(21,21,21,.6);
+    color:var(--bg);
+    border:2px solid var(--bg);
+    cursor:pointer;
+  }
+
+  #lightbox .lb-btn[hidden] { display:none; }
+
+  #lightbox .lb-close { top:1rem; right:1rem; }
+  #lightbox .lb-prev  { left:1rem;  top:50%; transform:translateY(-50%); }
+  #lightbox .lb-next  { right:1rem; top:50%; transform:translateY(-50%); }
+
+  #lightbox .lb-btn:focus-visible {
+    outline:3px solid var(--bg);
+    outline-offset:3px;
+  }
+
+  #lb-count {
+    position:absolute;
+    bottom:1rem;
+    left:0;
+    right:0;
+    text-align:center;
+    color:var(--bg);
+    font-size:.9rem;
+    text-shadow:0 0 6px #000;
   }
 </style>
 </head>
@@ -164,7 +231,7 @@ h1 img {
 
 <h1><img src="images/yog_title_ink_small.png" alt="YOG" width="581" height="228"></h1>
   
-    <!-- GIGS (filled in by the script below) -->
+  <!-- GIGS (filled in by the script below) -->
   <section id="upcoming-section" hidden>
     <h2>Upcoming gigs</h2>
     <ul id="gigs"></ul>
@@ -306,6 +373,15 @@ h1 img {
 
 </main>
 
+<!-- PHOTO VIEWER -->
+<div id="lightbox" role="dialog" aria-modal="true" aria-label="Photo viewer" hidden>
+  <img id="lb-img" alt="YOG live">
+  <button type="button" class="lb-btn lb-close" aria-label="Close">&times;</button>
+  <button type="button" class="lb-btn lb-prev" aria-label="Previous photo">&#8249;</button>
+  <button type="button" class="lb-btn lb-next" aria-label="Next photo">&#8250;</button>
+  <div id="lb-count" aria-live="polite"></div>
+</div>
+
 <script>
   /* ---- EDIT THESE LISTS ---- */
   
@@ -318,7 +394,7 @@ h1 img {
       tickets: "https://gel.now/events/1190" },
   ];
   
-  // Gig photos
+  // Gig photos (every filename needs a comma after it)
   const photos = [
     "yogsocial-1.jpg",
     "yogsocial-2.jpg",
@@ -333,20 +409,21 @@ h1 img {
   ];
 
   // Background images
- const sideImages = [
-  "bird_small.png",
-  "lizard_small.png",
-  "spotty_small.png",
-  "yellow_small.png",
-  "tundra.png",
-  "chinesedragon.png",
-  "pushhardandhold.png",
-  // add as many as you like
-];
+  const sideImages = [
+    "bird_small.png",
+    "lizard_small.png",
+    "spotty_small.png",
+    "yellow_small.png",
+    "tundra.png",
+    "chinesedragon.png",
+    "pushhardandhold.png",
+    // add as many as you like
+  ];
 
-const SIDE_COUNT = 3; // how many to show at once
+  const SIDE_COUNT = 3; // how many to show at once
 
   /* ---- Don't need to edit below ---- */
+
   // ---- Gigs: split into upcoming / previous by date ----
   (function renderGigs() {
     const DAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
@@ -394,30 +471,95 @@ const SIDE_COUNT = 3; // how many to show at once
     document.getElementById('upcoming-section').hidden = upcoming.length === 0;
     document.getElementById('past-section').hidden = past.length === 0;
   })();
-  
-  const grid = document.getElementById('photos');
 
-  photos.forEach(f => {
+  // ---- Photos + lightbox ----
+  const grid = document.getElementById('photos');
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lb-img');
+  const lbCount = document.getElementById('lb-count');
+  let current = 0;
+  let lastFocus = null;
+
+  photos.forEach((f, i) => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.setAttribute('aria-label', 'View photo ' + (i + 1) + ' of ' + photos.length);
+
     const img = document.createElement('img');
     img.src = 'photos/' + f;
     img.alt = 'YOG live';
     img.loading = 'lazy';
-    grid.appendChild(img);
+
+    btn.appendChild(img);
+    btn.addEventListener('click', () => openLightbox(i));
+    grid.appendChild(btn);
   });
 
+  function show(i) {
+    const n = photos.length;
+    current = (i + n) % n;
+    lbImg.src = 'photos/' + photos[current];
+    lbCount.textContent = (current + 1) + ' / ' + n;
+    // preload neighbours so next/prev feels instant
+    [1, -1].forEach(d => { new Image().src = 'photos/' + photos[(current + d + n) % n]; });
+  }
+
+  function openLightbox(i) {
+    lastFocus = document.activeElement;
+    lb.hidden = false;
+    document.body.style.overflow = 'hidden';
+    const single = photos.length < 2;
+    lb.querySelector('.lb-prev').hidden = single;
+    lb.querySelector('.lb-next').hidden = single;
+    show(i);
+    lb.querySelector('.lb-close').focus();
+  }
+
+  function closeLightbox() {
+    lb.hidden = true;
+    document.body.style.overflow = '';
+    lbImg.removeAttribute('src');
+    if (lastFocus) lastFocus.focus();
+  }
+
+  lb.querySelector('.lb-close').addEventListener('click', closeLightbox);
+  lb.querySelector('.lb-prev').addEventListener('click', () => show(current - 1));
+  lb.querySelector('.lb-next').addEventListener('click', () => show(current + 1));
+
+  // click the dark background (not the image or buttons) to close
+  lb.addEventListener('click', e => { if (e.target === lb) closeLightbox(); });
+
+  document.addEventListener('keydown', e => {
+    if (lb.hidden) return;
+    if (e.key === 'Escape') closeLightbox();
+    else if (e.key === 'ArrowLeft') show(current - 1);
+    else if (e.key === 'ArrowRight') show(current + 1);
+  });
+
+  // swipe left/right on touch screens
+  let touchX = null;
+  lb.addEventListener('touchstart', e => { touchX = e.touches[0].clientX; }, { passive: true });
+  lb.addEventListener('touchend', e => {
+    if (touchX === null) return;
+    const dx = e.changedTouches[0].clientX - touchX;
+    if (Math.abs(dx) > 50) show(current + (dx < 0 ? 1 : -1));
+    touchX = null;
+  });
+
+  // ---- Side images ----
   const sides = document.getElementById('sides');
 
   const GAP = 16;
 
   // Shuffle so the arrangement differs each load
- // Fisher-Yates shuffle (fairer than sort(() => Math.random() - 0.5))
-const shuffled = [...sideImages];
-for (let i = shuffled.length - 1; i > 0; i--) {
-  const j = Math.floor(Math.random() * (i + 1));
-  [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-}
+  // Fisher-Yates shuffle (fairer than sort(() => Math.random() - 0.5))
+  const shuffled = [...sideImages];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
 
-const order = shuffled.slice(0, SIDE_COUNT);
+  const order = shuffled.slice(0, SIDE_COUNT);
 
   const items = order.map((f, i) => {
     const img = document.createElement('img');
